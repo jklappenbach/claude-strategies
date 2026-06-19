@@ -1,0 +1,16 @@
+{
+  "name": "plugin-marketplace",
+  "owner": {
+    "name": "Julian Klappenbach",
+    "email": "jklappenbach@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "twilight",
+      "source": "./",
+      "description": "Spec → plan → develop workflow skills (design, implement) for Claude Code.",
+      "homepage": "https://github.com/jklappenbach/plugin-marketplace",
+      "license": "MIT"
+    }
+  ]
+}

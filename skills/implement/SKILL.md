@@ -1,11 +1,12 @@
 ---
-name: td-develop
-description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) by running its tasks through an explicit work stack in STACK.md — test-first, pushing subtasks/blockers and popping back, so the current focus and planned order are never lost. Use after /td-design once the plan is approved and coding begins.
+name: implement
+description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) by running its tasks through an explicit work stack in STACK.md — test-first, pushing subtasks/blockers and popping back, so the current focus and planned order are never lost. Use after the design skill once the plan is approved and coding begins.
 ---
 
-# td-develop — execute the plan as a task stack, test-first, with visible state
+# implement — execute the plan as a task stack, test-first, with visible state
 
-Use this **after the spec and plan are approved**. It turns `agents/<name>-plan.md`
+Use this **after the spec and plan are approved** (authored by the **design** skill).
+It turns `agents/<name>-plan.md`
 into working code by driving an explicit **work stack** recorded in `STACK.md`, so the
 current focus and the planned order of work are never lost.
 

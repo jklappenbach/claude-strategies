@@ -1,44 +1,55 @@
-# claude-strategies
+# plugin-marketplace
 
-Shareable [Claude Code](https://claude.com/claude-code) **skills** and **memories** I'm
-developing — reusable strategies for working with Claude Code, packaged so others
-(and other machines) can pick them up.
+A [Claude Code](https://claude.com/claude-code) **plugin marketplace** — shareable
+skills and memories I'm developing. Its flagship plugin, **`twilight`**, packages a
+spec → plan → develop workflow (the **`design`** and **`implement`** skills).
 
 ## Layout
 
 ```
-skills/      one directory per skill, each with a SKILL.md (+ any supporting files)
-memories/    portable memory files (markdown w/ frontmatter) — reference content; see caveats
+.claude-plugin/
+  marketplace.json   marketplace catalog
+  plugin.json        the twilight plugin manifest
+skills/              one directory per skill, each with a SKILL.md
+  design/            authors a spec + plan
+  implement/         executes a plan, test-first
+memories/            portable memory files (reference content; see caveats)
+install.sh           standalone (non-plugin) installer
 ```
 
-## Installing a skill
+## Install
 
-Each skill is a standard Claude Code skill: a directory containing a `SKILL.md`.
-Install it at the **user level** (available in every project) or **project level**
-(scoped to one repo). Clone this repo first, then symlink (recommended — picks up
-changes when you `git pull`) or copy:
+### Option 1 — plugin (recommended)
+
+```
+/plugin marketplace add jklappenbach/plugin-marketplace
+/plugin install twilight@plugin-marketplace
+```
+
+Skills then invoke **namespaced**: `/twilight:design`, `/twilight:implement`.
+Update later with `/plugin update twilight`.
+
+### Option 2 — install script (bare commands)
+
+Clone and run the installer — it symlinks every skill into `~/.claude/skills/` (so
+`git pull` keeps them current); they invoke as bare `/design`, `/implement`:
 
 ```sh
-# user-level: available everywhere
-mkdir -p ~/.claude/skills
-ln -sfn "$PWD/skills/<skill-name>" ~/.claude/skills/<skill-name>
-
-# project-level: scoped to one repo (commit it there if you like)
-ln -sfn "$PWD/skills/<skill-name>" /path/to/project/.claude/skills/<skill-name>
-
-# copy instead of symlink (frozen snapshot)
-cp -r skills/<skill-name> ~/.claude/skills/
+git clone https://github.com/jklappenbach/plugin-marketplace.git
+cd plugin-marketplace && ./install.sh
+# custom location: CLAUDE_SKILLS_DIR=/path/.claude/skills ./install.sh
 ```
 
-Install **all** skills at once:
+### Option 3 — manual
 
 ```sh
 mkdir -p ~/.claude/skills
 for d in skills/*/; do ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"; done
+# or per-skill; or copy instead of symlink; or into a project's .claude/skills/
 ```
 
-Invoke a skill in Claude Code with `/<skill-name>` (or let Claude auto-invoke it
-based on its `description`).
+> **Invocation differs by method:** the plugin namespaces commands
+> (`/twilight:design`); the script/manual symlink keeps them bare (`/design`).
 
 ### SKILL.md format
 
@@ -52,41 +63,48 @@ description: One line telling Claude WHEN to use this skill (required)
 # Skill body — the instructions Claude follows when the skill runs.
 ```
 
+## The twilight workflow
+
+- **`design`** — authors the spec (`docs/specs/<name>-spec.md`: the *why/what* with
+  enumerated use cases) and the outline-numbered, TDD-structured plan
+  (`agents/<name>-plan.md`).
+- **`implement`** — executes the approved plan **test-first**, driving a LIFO work
+  **stack** in `STACK.md` (push tasks in reverse plan order, work/pop the top, push
+  subtasks/blockers and pop back), marking plan checkboxes `x` (done) / `~` (blocked).
+
+The governing convention lives in `memories/td-project-workflow.md`, which the
+`design` skill installs into each project's root (and `@`-imports from `CLAUDE.md`).
+
 ## Memories
 
 ⚠️ **Memories are not distributable the way skills are.** Claude Code's auto-memory
-is **machine-local** and keyed per project (it lives in
-`~/.claude/projects/<project-slug>/memory/`, where the slug derives from the git
-repo). There is no memory registry, plugin channel, or install command. So the
-files in `memories/` are shared as **reference content**, and there are a few ways
-to actually put them to use:
+is **machine-local** and keyed per project (`~/.claude/projects/<project-slug>/memory/`,
+slug derived from the git repo). There is no memory registry, plugin channel, or
+install command. So the files in `memories/` are shared as **reference content**, with
+a few ways to use them:
 
-**A. Seed via a skill (recommended for distributing memory content).**
-Because skills *are* distributable, the cleanest way to ship memory content is a
-small installer skill that copies the curated files in `memories/` into the active
-project's memory store and updates its `MEMORY.md` index. Keep the facts as data in
-`memories/` (reviewable, diff-able) and let the skill be the thin installer — don't
-bake the facts into the skill body.
+**A. Carried by the `design` skill (automatic, for the workflow memory).** Since memory
+has no native distribution but skills do, the workflow memory rides in the skill:
+`design` bundles `td-project-workflow.md` and, on project init, writes it to the
+project root and `@`-imports it from `CLAUDE.md` — so installing the plugin/skill is
+all that's needed. The same pattern works for other memories: a thin skill copies a
+`memories/*.md` into a project and wires the import; keep the facts as data in
+`memories/`, not baked into skill logic.
 
-**B. Always-on directives → `CLAUDE.md` / `.claude/rules/`, not a skill.**
-A skill only acts when invoked. For behavior that should *always* apply, use
-`CLAUDE.md` (always in context). For **user-global** directives across every
-project, keep them here and symlink:
-```sh
-ln -sfn "$PWD/CLAUDE.md" ~/.claude/CLAUDE.md   # global, always-loaded, repo-tracked
-```
-For **project-wide** facts, commit them to that repo's `CLAUDE.md` / `.claude/rules/`.
+**B. Always-on directives → `CLAUDE.md` / `.claude/rules/`.** A skill only acts when
+invoked. For behavior that should *always* apply, use `CLAUDE.md`; for user-global
+directives across every project, keep a `CLAUDE.md` here and symlink it to
+`~/.claude/CLAUDE.md`.
 
-**C. Copy into a project's memory store** (manual, one-off):
+**C. Copy into a project's memory store** (manual):
 ```sh
 cp memories/<file>.md ~/.claude/projects/<your-project-slug>/memory/
-# then add a one-line pointer for it in that project's memory/MEMORY.md index
+# then add a one-line pointer in that project's memory/MEMORY.md index
 ```
 
-**D. Point Claude Code at this checkout** via `settings.json` (makes it the live
-store for a project — note Claude will then *write* here too):
+**D. Point Claude Code at a checkout** via `settings.json`:
 ```json
-{ "autoMemoryDirectory": "~/claude-strategies/memories" }
+{ "autoMemoryDirectory": "~/plugin-marketplace/memories" }
 ```
 
 Each memory file is markdown with frontmatter:

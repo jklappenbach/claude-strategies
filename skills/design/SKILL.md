@@ -1,9 +1,9 @@
 ---
-name: td-design
+name: design
 description: Author or revise a spec (docs/specs/<name>-spec.md) and its plan (agents/<name>-plan.md) when scoping new work — requirements + enumerated use cases in the spec, an outline-numbered TDD work plan in the plan. Use when starting a new application, feature, or capability. Governs both documents.
 ---
 
-# td-design — author the spec and the plan
+# design — author the spec and the plan
 
 Use this when **scoping new work**. It governs the authoring of **both** documents:
 
@@ -19,12 +19,24 @@ If any of these are missing, initialize them at the project root first:
 
 ```
 <root>/
-├── <project memory file>        # the governing memory at the root
-├── STACK.md                     # living work-state (maintained by /td-develop)
+├── td-project-workflow.md       # the governing memory at the root
+├── STACK.md                     # living work-state (maintained by the implement skill)
 ├── docs/
 │   └── specs/                   # specs live here
 └── agents/                      # plans live here
 ```
+
+**Install the governing memory.** This skill bundles `td-project-workflow.md`. On
+project init, copy it to the project **root** and make it always-loaded by adding an
+import line to the project's `CLAUDE.md`:
+
+```
+@td-project-workflow.md
+```
+
+(When installed as a plugin, the bundled file lives at
+`${CLAUDE_PLUGIN_ROOT}/skills/design/td-project-workflow.md`; as a standalone skill
+it sits beside this `SKILL.md`.)
 
 ## 1. Write the spec → `docs/specs/<name>-spec.md`
 
@@ -63,11 +75,12 @@ identifiable (e.g. `3.2.1` = unit 3, TDD, item 1). Trace each unit back to the s
 use case(s) it satisfies.
 
 Render each unit of work (and its line items) as a **markdown checkbox** (`- [ ]`) so
-`/td-develop` can track progress against them — it marks `- [x]` when done and `- [~]`
-when blocked. Because `/td-develop` works the plan as a dependency-ordered stack,
-**order the units by dependency**: any unit that depends on another must come after it.
+the **implement** skill can track progress against them — it marks `- [x]` when done
+and `- [~]` when blocked. Because **implement** works the plan as a dependency-ordered
+stack, **order the units by dependency**: any unit that depends on another must come
+after it.
 
 ## 3. Approval and hand-off
 
 Both documents are drafts until the developer approves them. On approval, hand off to
-**`/td-develop`** to implement the plan.
+the **implement** skill to build the plan.

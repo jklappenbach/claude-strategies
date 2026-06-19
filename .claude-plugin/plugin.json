@@ -1,0 +1,13 @@
+{
+  "name": "twilight",
+  "description": "Spec → plan → develop workflow for Claude Code: design authors the spec + plan, implement executes the plan test-first via a STACK.md work stack.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Julian Klappenbach",
+    "email": "jklappenbach@gmail.com"
+  },
+  "homepage": "https://github.com/jklappenbach/plugin-marketplace",
+  "repository": "https://github.com/jklappenbach/plugin-marketplace",
+  "license": "MIT",
+  "keywords": ["spec", "plan", "tdd", "workflow", "skills"]
+}
