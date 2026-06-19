@@ -20,10 +20,12 @@ If any of these are missing, initialize them at the project root first:
 ```
 <root>/
 ├── td-project-workflow.md       # the governing memory at the root
-├── STACK.md                     # living work-state (maintained by the implement skill)
 ├── docs/
-│   └── specs/                   # specs live here
-└── agents/                      # plans live here
+│   └── specs/                   # specs:  docs/specs/<name>-spec.md
+└── agents/                      # plans + work stacks (stacks maintained by implement):
+    ├── <name>-plan.md           #   one plan per unit of work
+    ├── <name>-stack.md          #   one per-plan task stack (LIFO within a plan)
+    └── focus.md                 #   one cross-plan focus stack (which plan you're in)
 ```
 
 **Install the governing memory.** This skill bundles `td-project-workflow.md`. On
@@ -76,9 +78,9 @@ use case(s) it satisfies.
 
 Render each unit of work (and its line items) as a **markdown checkbox** (`- [ ]`) so
 the **implement** skill can track progress against them — it marks `- [x]` when done
-and `- [~]` when blocked. Because **implement** works the plan as a dependency-ordered
-stack, **order the units by dependency**: any unit that depends on another must come
-after it.
+and `- [~]` when blocked. Because **implement** loads the plan onto a per-plan task stack
+(`agents/<name>-stack.md`) in dependency order, **order the units by dependency**: any
+unit that depends on another must come after it.
 
 ## 3. Approval and hand-off
 

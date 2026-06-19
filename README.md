@@ -68,9 +68,12 @@ description: One line telling Claude WHEN to use this skill (required)
 - **`design`** — authors the spec (`docs/specs/<name>-spec.md`: the *why/what* with
   enumerated use cases) and the outline-numbered, TDD-structured plan
   (`agents/<name>-plan.md`).
-- **`implement`** — executes the approved plan **test-first**, driving a LIFO work
-  **stack** in `STACK.md` (push tasks in reverse plan order, work/pop the top, push
-  subtasks/blockers and pop back), marking plan checkboxes `x` (done) / `~` (blocked).
+- **`implement`** — executes the approved plan **test-first** on a **two-level work
+  stack** (a call stack): per-plan task stacks `agents/<name>-stack.md` under one
+  cross-plan **focus stack** `agents/focus.md`. Same-plan tangents push on the plan's
+  stack; jumps to another plan or free exploration push a frame on `focus.md` — so
+  popping always returns you to where you were, within a plan and across plans. Marks
+  plan checkboxes `x` (done) / `~` (blocked); completion lives in the plan.
 
 The governing convention lives in `memories/td-project-workflow.md`, which the
 `design` skill installs into each project's root (and `@`-imports from `CLAUDE.md`).
