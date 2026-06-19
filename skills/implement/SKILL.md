@@ -58,7 +58,10 @@ Example `focus.md` while three deep:
 Plans are **dependency-ordered**. When you start a plan:
 
 1. Create `agents/<name>-stack.md` and **push its tasks in reverse plan order** — so the
-   **first task popped is the first task in the plan**.
+   **first task popped is the first task in the plan**. Push **only uncompleted (`- [ ]`)
+   and blocked (`- [~]`) line items**; skip anything already marked done (`- [x]`). When
+   resuming a partly-done plan this is what puts you back at the first *remaining* task,
+   not the top of a list of finished work.
 2. Push a frame `[<name>]` onto `agents/focus.md`.
 
 Switching to an already-started plan is just step 2 — its task stack is where you left it.
@@ -88,6 +91,21 @@ higher-priority item, or a blocker:
 
 When it's done, pop back exactly where you left off — this is how we never lose track of
 what we were working on, or the order in which we had planned the work.
+
+### Offered options ARE stack items
+When you present the user a set of next-step options, you are **reading off the stack** —
+the options and the stack must never diverge. On the user's choice:
+
+1. The **picked** option becomes the active top (work it).
+2. **Push every unchosen option onto the stack** (the plan's task stack if it's in-plan,
+   a `focus.md` frame if it's another plan/tangent) — into the deferred/discovered
+   section, **not** left only in prose. An option you offered but didn't capture is an
+   option you lost.
+
+Conversely, when deciding *what* options to offer, **draw them from the stack** so the
+"what could I do next" you present and the "what's parked" in the files are the same list.
+This is what keeps the dashboard honest: the user is always choosing among real,
+recorded stack items, never ephemeral suggestions.
 
 ### Completing / abandoning a frame
 When a plan is finished (or you drop a tangent), **pop the frame** from `focus.md`. On
@@ -124,5 +142,8 @@ degrade gracefully — work from whatever's present rather than erroring.
 - **Keep the stacks thin:** they hold *doing* and *discovered*, never *done* — completion
   lives in the plan's checkboxes. If a task stack starts looking like a second plan,
   promote those items into the plan instead. There is **no** separate completed-log file.
+- **Options track the stack:** every next-step option you offer is a stack item; the
+  unchosen ones get pushed (deferred), and the options you present are read off the stack.
+  Offered choices and recorded stack never diverge.
 - **Report honestly:** the stacks are the dashboard — show the real frames, the real task
   stack, failing tests, and blockers (`~`); never present unverified work as done.

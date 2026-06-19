@@ -1,7 +1,7 @@
 {
   "name": "twilight",
-  "description": "Spec → plan → develop workflow for Claude Code: design authors the spec + plan, implement executes the plan test-first via a STACK.md work stack.",
-  "version": "0.1.0",
+  "description": "Spec → plan → develop workflow for Claude Code: design authors the spec + plan, implement executes the plan test-first on a two-level work stack (global focus.md + per-plan task stacks).",
+  "version": "0.2.0",
   "author": {
     "name": "Julian Klappenbach",
     "email": "jklappenbach@gmail.com"
