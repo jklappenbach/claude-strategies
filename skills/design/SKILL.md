@@ -23,9 +23,10 @@ If any of these are missing, initialize them at the project root first:
 ├── docs/
 │   └── specs/                   # specs:  docs/specs/<name>-spec.md
 └── agents/                      # plans + work stacks (stacks maintained by implement):
-    ├── <name>-plan.md           #   one plan per unit of work
-    ├── <name>-focus.md          #   one per-plan task stack (LIFO within a plan)
-    └── focus.md                 #   one cross-plan focus stack (which plan you're in)
+    ├── <name>-plan.md           #   one plan per unit of work (SHARED across clones)
+    ├── <name>-focus.md          #   per-plan task stack, LIFO (SHARED; single-writer per plan)
+    └── state/<clone-id>/
+        └── focus.md             #   cross-plan focus stack — PER CLONE (no bleed)
 ```
 
 **Install the governing memory.** This skill bundles `td-project-workflow.md`. On

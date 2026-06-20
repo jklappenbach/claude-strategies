@@ -69,11 +69,12 @@ description: One line telling Claude WHEN to use this skill (required)
   enumerated use cases) and the outline-numbered, TDD-structured plan
   (`agents/<name>-plan.md`).
 - **`implement`** — executes the approved plan **test-first** on a **two-level focus
-  stack** (a call stack): per-plan task stacks `agents/<name>-focus.md` under one
-  cross-plan **focus stack** `agents/focus.md`. Same-plan tangents push on the plan's
-  stack; jumps to another plan or free exploration push a frame on `focus.md` — so
-  popping always returns you to where you were, within a plan and across plans. Marks
-  plan checkboxes `x` (done) / `~` (blocked); completion lives in the plan.
+  stack** (a call stack): shared per-plan task stacks `agents/<name>-focus.md` under one
+  **per-clone** cross-plan **focus stack** `agents/state/<clone-id>/focus.md`. Same-plan
+  tangents push on the plan's stack; jumps to another plan or free exploration push a
+  frame on `focus.md` — so popping always returns you to where you were, within a plan
+  and across plans, **without bleeding state between clones** that share one `agents/`.
+  Marks plan checkboxes `x` (done) / `~` (blocked); completion lives in the plan.
 
 The governing convention lives in `memories/td-project-workflow.md`, which the
 `design` skill installs into each project's root (and `@`-imports from `CLAUDE.md`).
@@ -129,6 +130,12 @@ The fact. Link related memories with [[other-slug]].
 
 ## Recent Updates
 
+- **v0.4.0 — Per-clone focus stack (no cross-clone bleed).** When several working
+  copies share one `agents/` repo, the global focus stack moves to
+  `agents/state/<clone-id>/focus.md` (`<clone-id>` = hostname + slugified working-copy
+  path), so each clone keeps its own attention. The **per-plan task stacks stay
+  shared** — a plan is single-writer (one clone at a time), so they can't bleed. Plans
+  and specs are shared as before.
 - **v0.3.0 — `stack` → `focus` naming, unified across both levels.** Both work-stack
   files now share the `focus` filename convention: the global frame stack stays
   `agents/focus.md`, and each per-plan task stack is `agents/<name>-focus.md` (was

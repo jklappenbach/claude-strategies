@@ -1,7 +1,7 @@
 {
   "name": "twilight",
-  "description": "Spec → plan → develop workflow for Claude Code: design authors the spec + plan, implement executes the plan test-first on a two-level focus stack (global focus.md + per-plan <name>-focus.md).",
-  "version": "0.3.0",
+  "description": "Spec → plan → develop workflow for Claude Code: design authors the spec + plan, implement executes the plan test-first on a two-level focus stack (per-clone state/<clone-id>/focus.md + shared per-plan <name>-focus.md).",
+  "version": "0.4.0",
   "author": {
     "name": "Julian Klappenbach",
     "email": "jklappenbach@gmail.com"

@@ -15,9 +15,11 @@ Initialize every project with this layout:
 - **Specs** live at `docs/specs/[name]-spec.md`.
 - **Plans** live at `agents/[name]-plan.md`.
 - **Work stacks** live in `agents/` too (maintained by the **implement** skill):
-  one **per-plan task stack** `agents/[name]-focus.md`, under a single cross-plan
-  **focus stack** `agents/focus.md`. Completion status lives in the plan's checkboxes —
-  there is **no** separate completed-log.
+  one **per-plan task stack** `agents/[name]-focus.md` (**shared** across clones —
+  single-writer per plan), under a **per-clone** cross-plan **focus stack**
+  `agents/state/[clone-id]/focus.md` (so clones sharing one `agents/` don't bleed
+  attention; `clone-id` = hostname + slugified working-copy path). Completion status
+  lives in the plan's checkboxes — there is **no** separate completed-log.
 
 ## What a spec is (a.k.a. SRD / SRS)
 A spec focuses on the **requirements and use cases** — the **why** and the **what**.
@@ -44,11 +46,14 @@ has a unique identifier. The plan's checkboxes (`- [ ]` / `- [x]` / `- [~]`) are
 **source of truth for what's done** — the stacks never record completion.
 
 ## Work state (the two-level stack)
-While implementing, work state is a **call stack**: `agents/focus.md` is the frame stack
-of which plan/context you're in; each `agents/[name]-focus.md` is that plan's own task
-LIFO. A tangent *inside* the current plan pushes on that plan's stack; a jump to *another*
-plan (or free exploration) pushes a frame on `focus.md` — so popping always returns you to
-where you were, within a plan **and** across plans. The **implement** skill governs this.
+While implementing, work state is a **call stack**: the frame stack
+`agents/state/[clone-id]/focus.md` holds which plan/context you're in; each
+`agents/[name]-focus.md` is that plan's own task LIFO. A tangent *inside* the current
+plan pushes on that plan's stack; a jump to *another* plan (or free exploration) pushes a
+frame on `focus.md` — so popping always returns you to where you were, within a plan
+**and** across plans. The focus stack is **per-clone** (working copies sharing one
+`agents/` keep separate attention); the per-plan task stacks are **shared**. The
+**implement** skill governs this.
 
 ## Workflow
 1. **Scoping new work** → first create a new spec and write it *with the developer*.

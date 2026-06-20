@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) test-first, driving a two-level focus stack — per-plan task stacks (agents/<name>-focus.md) under one cross-plan focus stack (agents/focus.md) — so tangents within and across plans always pop back to where you were. The plan's checkboxes own completion. Use after the design skill once the plan is approved and coding begins.
+description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) test-first, driving a two-level focus stack — shared per-plan task stacks (agents/<name>-focus.md) under one per-clone focus stack (agents/state/<clone-id>/focus.md) — so tangents within and across plans always pop back to where you were, without bleeding state between clones. The plan's checkboxes own completion. Use after the design skill once the plan is approved and coding begins.
 ---
 
 # implement — execute plans test-first on a two-level work stack
@@ -10,7 +10,7 @@ turns `agents/<name>-plan.md` into working code while keeping the current focus 
 planned order of work visible and recoverable — even across tangents and plan switches.
 
 ## The two-level focus stack (a call stack)
-Think of it exactly like a runtime call stack: **`agents/focus.md` is the frame stack;
+Think of it exactly like a runtime call stack: **the frame stack is `focus.md`;
 each `agents/<name>-focus.md` is the locals of a frame.**
 
 Both levels share the **`focus`** filename convention — `focus.md` (global) and
@@ -18,11 +18,19 @@ Both levels share the **`focus`** filename convention — `focus.md` (global) an
 granularities: the global file names which **plan**, the per-plan file names which
 **task**. Each is still a LIFO stack; only the name is unified.
 
-### Per-plan task stack — `agents/<name>-focus.md` (one per plan)
+**Sharing differs by level (this is what keeps clones from bleeding).** When several
+working copies check out the same `agents/` repo, the **per-plan task stacks are
+shared** but the **global focus stack is per-clone** — see each section below.
+
+### Per-plan task stack — `agents/<name>-focus.md` (one per plan, SHARED across clones)
 The LIFO of tasks **within** a plan. It pairs with `agents/<name>-plan.md` (same
 `<name>`), is isolated from other plans, and is archived/deleted when the plan closes
 (the plan's checkboxes remain the record). While you're away working another plan, this
 file is **untouched**, so returning resumes you at the exact task you left.
+
+It is **shared across clones** (committed in `agents/`, no per-clone copy) because a
+plan is **single-writer** — only one working copy works a given plan at a time — so
+there is nothing to bleed.
 
 Each entry is a **task reference, not a copy**:
 
@@ -32,7 +40,7 @@ Each entry is a **task reference, not a copy**:
 
 the task's **outline ID** and **name** from that plan.
 
-### Focus stack — `agents/focus.md` (one, global, cross-plan)
+### Focus stack — `agents/state/<clone-id>/focus.md` (one PER CLONE, cross-plan)
 A **thin** LIFO of **which plan/context you're attending to** — frames, not tasks:
 
 ```
@@ -41,7 +49,25 @@ A **thin** LIFO of **which plan/context you're attending to** — frames, not ta
 ```
 
 It grows with attention **depth** (usually 1–3), not task count. The **top frame names
-the plan whose task stack you're currently working.**
+the plan whose task stack you're currently working.** (Referred to below as `focus.md`
+for short.)
+
+**Per-clone, because attention is per working copy.** Several clones of the same
+project share one `agents/` repo and each runs its own session with its own live
+attention — a single shared `focus.md` would bleed one clone's frames into another. So
+each clone keeps its focus stack under its own directory:
+
+```
+agents/state/<clone-id>/focus.md
+```
+
+`<clone-id>` = `<hostname>-<slug>` where `<slug>` is the clone's **absolute
+working-copy path** with the leading `/` dropped and every `/` replaced by `-` (e.g.
+`proton-home-julian-code-cpp-cajeta-two`). Derive it at runtime from the host name and
+`pwd`; create `agents/state/<clone-id>/` on first write. Each clone only ever writes its
+own subtree, so commits from different clones never collide. Within one clone the focus
+stack is **not** branch-isolated — your attention spans branches in the same working
+copy; it is isolated only **across clones**.
 
 ## The one rule (push/pop scoping)
 - A subtask/blocker **inside the current plan** → push it on **that plan's**
@@ -67,7 +93,7 @@ Plans are **dependency-ordered**. When you start a plan:
    and blocked (`- [~]`) line items**; skip anything already marked done (`- [x]`). When
    resuming a partly-done plan this is what puts you back at the first *remaining* task,
    not the top of a list of finished work.
-2. Push a frame `[<name>]` onto `agents/focus.md`.
+2. Push a frame `[<name>]` onto `focus.md` (your clone's `agents/state/<clone-id>/focus.md`).
 
 Switching to an already-started plan is just step 2 — its task stack is where you left it.
 
@@ -132,9 +158,21 @@ When a task **can't be finished due to an unexpected dependency**:
 ## Where the files live
 Plans and both stack levels live under **`agents/`**. In split public/private repos
 `agents/` is often gitignored or a separate repo — commit the plan + stacks wherever
-`agents/` is versioned, not with the code. `focus.md` is deliberately **not**
-branch-isolated: your attention spans branches. On a fresh clone without `agents/`,
-degrade gracefully — work from whatever's present rather than erroring.
+`agents/` is versioned, not with the code.
+
+Layout when one `agents/` repo is shared by several clones:
+
+```
+agents/
+  <name>-plan.md                 # SHARED — the plan
+  <name>-focus.md                # SHARED — per-plan task stack (single-writer per plan)
+  state/<clone-id>/focus.md      # PER CLONE — the global focus stack
+```
+
+`focus.md` is per-clone but **not** branch-isolated *within* a clone: your attention
+spans branches in the same working copy, but never bleeds across clones. On a fresh
+clone without `agents/`, degrade gracefully — work from whatever's present rather than
+erroring; create `state/<clone-id>/` the first time you write the focus stack.
 
 ## Rules
 - **Traceability:** `focus.md` frames carry `[plan-id]`; per-plan entries carry
