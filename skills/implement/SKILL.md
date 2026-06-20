@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) test-first, driving a two-level work stack — per-plan task stacks (agents/<name>-stack.md) under one cross-plan focus stack (agents/focus.md) — so tangents within and across plans always pop back to where you were. The plan's checkboxes own completion. Use after the design skill once the plan is approved and coding begins.
+description: Implement an approved spec + plan (docs/specs/<name>-spec.md and agents/<name>-plan.md) test-first, driving a two-level focus stack — per-plan task stacks (agents/<name>-focus.md) under one cross-plan focus stack (agents/focus.md) — so tangents within and across plans always pop back to where you were. The plan's checkboxes own completion. Use after the design skill once the plan is approved and coding begins.
 ---
 
 # implement — execute plans test-first on a two-level work stack
@@ -9,11 +9,16 @@ Use this **after the spec and plan are approved** (authored by the **design** sk
 turns `agents/<name>-plan.md` into working code while keeping the current focus and the
 planned order of work visible and recoverable — even across tangents and plan switches.
 
-## The two-level stack (a call stack)
+## The two-level focus stack (a call stack)
 Think of it exactly like a runtime call stack: **`agents/focus.md` is the frame stack;
-each `agents/<name>-stack.md` is the locals of a frame.**
+each `agents/<name>-focus.md` is the locals of a frame.**
 
-### Per-plan task stack — `agents/<name>-stack.md` (one per plan)
+Both levels share the **`focus`** filename convention — `focus.md` (global) and
+`<name>-focus.md` (per-plan) — because both answer *what am I focused on*, at two
+granularities: the global file names which **plan**, the per-plan file names which
+**task**. Each is still a LIFO stack; only the name is unified.
+
+### Per-plan task stack — `agents/<name>-focus.md` (one per plan)
 The LIFO of tasks **within** a plan. It pairs with `agents/<name>-plan.md` (same
 `<name>`), is isolated from other plans, and is archived/deleted when the plan closes
 (the plan's checkboxes remain the record). While you're away working another plan, this
@@ -40,7 +45,7 @@ the plan whose task stack you're currently working.**
 
 ## The one rule (push/pop scoping)
 - A subtask/blocker **inside the current plan** → push it on **that plan's**
-  `<name>-stack.md` (local), work it, pop back.
+  `<name>-focus.md` (local), work it, pop back.
 - A jump to **another plan**, or **free exploration** → push a **frame** on `focus.md`
   and switch to that plan's task stack (creating it if new). When the frame is done,
   **pop `focus.md`** — you're back in the previous plan, and its task stack still holds
@@ -57,7 +62,7 @@ Example `focus.md` while three deep:
 ## Starting / switching to a plan
 Plans are **dependency-ordered**. When you start a plan:
 
-1. Create `agents/<name>-stack.md` and **push its tasks in reverse plan order** — so the
+1. Create `agents/<name>-focus.md` and **push its tasks in reverse plan order** — so the
    **first task popped is the first task in the plan**. Push **only uncompleted (`- [ ]`)
    and blocked (`- [~]`) line items**; skip anything already marked done (`- [x]`). When
    resuming a partly-done plan this is what puts you back at the first *remaining* task,
@@ -86,7 +91,7 @@ subsections):
 A **subtask** that must be worked **before** the current one — a tangent, a
 higher-priority item, or a blocker:
 
-- **In the current plan** → push it on the plan's `<name>-stack.md`, work it, pop back.
+- **In the current plan** → push it on the plan's `<name>-focus.md`, work it, pop back.
 - **In another plan, or free exploration** → push a frame on `focus.md` and switch.
 
 When it's done, pop back exactly where you left off — this is how we never lose track of
@@ -109,7 +114,7 @@ recorded stack items, never ephemeral suggestions.
 
 ### Completing / abandoning a frame
 When a plan is finished (or you drop a tangent), **pop the frame** from `focus.md`. On
-plan completion, archive or delete its `<name>-stack.md` — the checked plan is the record.
+plan completion, archive or delete its `<name>-focus.md` — the checked plan is the record.
 
 ### Can't finish → mark blocked
 When a task **can't be finished due to an unexpected dependency**:

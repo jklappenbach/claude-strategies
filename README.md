@@ -68,8 +68,8 @@ description: One line telling Claude WHEN to use this skill (required)
 - **`design`** — authors the spec (`docs/specs/<name>-spec.md`: the *why/what* with
   enumerated use cases) and the outline-numbered, TDD-structured plan
   (`agents/<name>-plan.md`).
-- **`implement`** — executes the approved plan **test-first** on a **two-level work
-  stack** (a call stack): per-plan task stacks `agents/<name>-stack.md` under one
+- **`implement`** — executes the approved plan **test-first** on a **two-level focus
+  stack** (a call stack): per-plan task stacks `agents/<name>-focus.md` under one
   cross-plan **focus stack** `agents/focus.md`. Same-plan tangents push on the plan's
   stack; jumps to another plan or free exploration push a frame on `focus.md` — so
   popping always returns you to where you were, within a plan and across plans. Marks
@@ -126,3 +126,20 @@ The fact. Link related memories with [[other-slug]].
 ## License
 
 [MIT](LICENSE) © Julian Klappenbach
+
+## Recent Updates
+
+- **v0.3.0 — `stack` → `focus` naming, unified across both levels.** Both work-stack
+  files now share the `focus` filename convention: the global frame stack stays
+  `agents/focus.md`, and each per-plan task stack is `agents/<name>-focus.md` (was
+  `agents/<name>-stack.md`). One word, two granularities of *what you're focused on* —
+  which **plan** (global), then which **task** (per-plan). The LIFO/push-pop mechanics
+  are unchanged; only the per-plan filename changed.
+- **v0.2.0 — Options track the stack.** Every next-step option offered to the user is a
+  real stack item: the unchosen ones get pushed (deferred) rather than left in prose,
+  and offered options are read back off the stack — so the dashboard and the parked
+  work never diverge. Plan-start seeds **only uncompleted (`[ ]`) and blocked (`[~]`)**
+  items, resuming a partly-done plan at its first *remaining* task.
+- **v0.1.0 — Two-level work stack.** Introduced the call-stack execution model:
+  per-plan task stacks under one cross-plan focus stack, so tangents within and across
+  plans always pop back to where you were; plan checkboxes own completion.

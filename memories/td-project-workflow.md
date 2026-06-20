@@ -15,7 +15,7 @@ Initialize every project with this layout:
 - **Specs** live at `docs/specs/[name]-spec.md`.
 - **Plans** live at `agents/[name]-plan.md`.
 - **Work stacks** live in `agents/` too (maintained by the **implement** skill):
-  one **per-plan task stack** `agents/[name]-stack.md`, under a single cross-plan
+  one **per-plan task stack** `agents/[name]-focus.md`, under a single cross-plan
   **focus stack** `agents/focus.md`. Completion status lives in the plan's checkboxes —
   there is **no** separate completed-log.
 
@@ -45,7 +45,7 @@ has a unique identifier. The plan's checkboxes (`- [ ]` / `- [x]` / `- [~]`) are
 
 ## Work state (the two-level stack)
 While implementing, work state is a **call stack**: `agents/focus.md` is the frame stack
-of which plan/context you're in; each `agents/[name]-stack.md` is that plan's own task
+of which plan/context you're in; each `agents/[name]-focus.md` is that plan's own task
 LIFO. A tangent *inside* the current plan pushes on that plan's stack; a jump to *another*
 plan (or free exploration) pushes a frame on `focus.md` — so popping always returns you to
 where you were, within a plan **and** across plans. The **implement** skill governs this.
